@@ -1,0 +1,15 @@
+#drop:hover,
+#drop:focus,
+#drop.hover {
+    background-color: rgba(255, 255, 255, 1.0);
+}
+
+#drop {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    border: 2px dashed;
+    margin: 1em 0;
+    padding: 10vh 2em;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
