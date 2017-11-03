@@ -59,18 +59,21 @@ var processWb = (function() {
                 _wp_nonce: wp.wp_nonce,
             },
             beforeSend: function() {
-                jQuery('.soldier-list').addClass('loading');
+                jQuery('#results').addClass('loading');
             },
             complete: function(jqXHR, status) {
                 if (status != 'success') {
                     console.log('ajax', new Date(), status, jqXHR);
                 }
-                jQuery('.soldier-list').removeClass('loading');
+                jQuery('#results').removeClass('loading');
             },
             success: function(returndData) {
-                jQuery('.soldier-list').html(returndData);
+                jQuery('#results').html(returndData);
             },
-
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR, textStatus, errorThrown);
+            },
+            timeout: 0
         });
     };
 })();

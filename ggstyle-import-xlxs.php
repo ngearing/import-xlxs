@@ -5,16 +5,16 @@
  * Author: ng
  * Version: 0.0.1
  */
-if (! defined('ABSPATH')) {
-	exit; // Exit if accessed directly
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
 
 /**
  * Add Admin Menu
  */
-add_action('admin_menu', 'gix_options_page');
-function gix_options_page()
-{
+add_action( 'admin_menu', 'gix_options_page' );
+function gix_options_page() {
 	$page = add_submenu_page(
 		'tools.php',                // $parent_slug
 		'Import xlxs',              // $page_title
@@ -24,27 +24,27 @@ function gix_options_page()
 		'gix_options_page_html'     // $function
 	);
 
-	add_action('admin_print_scripts-' . $page, 'gix_admin_scripts');
+	add_action( 'admin_print_scripts-' . $page, 'gix_admin_scripts' );
 }
 
 /**
  * Load scripts
  */
 function gix_admin_scripts() {
-	wp_enqueue_style('gix-admin-css', plugin_dir_url(__FILE__).'/assets/css/admin-css.css');
+	wp_enqueue_style( 'gix-admin-css', plugin_dir_url( __FILE__ ) . '/assets/css/admin-css.css' );
 
-	wp_enqueue_script('jquery');
+	wp_enqueue_script( 'jquery' );
 
 	wp_enqueue_script(
 		'xlsx',
-		plugin_dir_url(__FILE__) . '/assets/js/xlsx.full.min.js',
+		plugin_dir_url( __FILE__ ) . '/assets/js/xlsx.full.min.js',
 		[ 'jquery' ],
 		'',
 		true
 	);
 	wp_register_script(
 		'xlsx-init',
-		plugin_dir_url(__FILE__) . '/assets/js/xlsx-init.js',
+		plugin_dir_url( __FILE__ ) . '/assets/js/xlsx-init.js',
 		[ 'jquery' ],
 		'',
 		true
@@ -53,46 +53,45 @@ function gix_admin_scripts() {
 		'xlsx-init',
 		'wp',
 		[
-			'ajaxurl' => admin_url('admin-ajax.php'),
-			'wp_nonce'  => wp_create_nonce('ajax-nonce'),
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'wp_nonce'  => wp_create_nonce( 'ajax-nonce' ),
 		]
 	);
-	wp_enqueue_script('xlsx-init');
+	wp_enqueue_script( 'xlsx-init' );
 }
- 
+
 /**
  * top level menu:
  * callback functions
  */
-function gix_options_page_html()
-{
+function gix_options_page_html() {
 	// check user capabilities
-	if (! current_user_can('manage_options')) {
+	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
- 
+
 	// add error/update messages
- 
 	// check if the user have submitted the settings
-	// wordpress will add the "settings-updated" $_GET parameter to the url
-	if (isset($_GET['settings-updated'])) {
+	// WordPress will add the "settings-updated" $_GET parameter to the url
+	if ( isset( $_GET['settings-updated'] ) ) {
 		// add settings saved message with the class of "updated"
-		add_settings_error('gix_messages', 'gix_message', __('Settings Saved', 'gix'), 'updated');
+		add_settings_error( 'gix_messages', 'gix_message', __( 'Settings Saved', 'gix' ), 'updated' );
 	}
- 
+
 	// show error/update messages
-	settings_errors('gix_messages'); ?>
+	settings_errors( 'gix_messages' ); ?>
 	<div class="wrap">
-	<h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 	<form action="options.php" method="post">
 	<?php
 	// output security fields for the registered setting "gix"
-	settings_fields('gix');
+	settings_fields( 'gix' );
 	// output setting sections and their fields
 	// (sections are registered for "gix", each field is registered to a specific section)
-	do_settings_sections('gix');
+	do_settings_sections( 'gix' );
 	// output save settings button
-	submit_button('Save Settings'); ?>
+	submit_button( 'Save Settings' );
+	?>
 	</form>
 	</div>
 <?php
@@ -101,24 +100,23 @@ function gix_options_page_html()
 /**
  * custom option and settings
  */
-function gix_settings_init()
-{
+function gix_settings_init() {
 	// register a new setting for "gix" page
-	register_setting('gix', 'gix_options');
- 
+	register_setting( 'gix', 'gix_options' );
+
 	// register a new section in the "gix" page
 	add_settings_section(
 		'gix_section_developers',
-		__('The Matrix has you.', 'gix'),
+		__( 'The Matrix has you.', 'gix' ),
 		'gix_section_developers_cb',
 		'gix'
 	);
- 
+
 	// register a new field in the "gix_section_developers" section, inside the "gix" page
 	add_settings_field(
 		'gix_field_pill', // as of WP 4.6 this value is used only internally
 		// use $args' label_for to populate the id inside the callback
-		__('Pill', 'gix'),
+		__( 'Pill', 'gix' ),
 		'gix_field_pill_cb',
 		'gix',
 		'gix_section_developers',
@@ -129,55 +127,56 @@ function gix_settings_init()
 		]
 	);
 }
- 
+
 /**
  * register our gix_settings_init to the admin_init action hook
  */
-add_action('admin_init', 'gix_settings_init');
- 
+add_action( 'admin_init', 'gix_settings_init' );
+
 /**
  * custom option and settings:
  * callback functions
  */
- 
+
 // developers section cb
- 
 // section callbacks can accept an $args parameter, which is an array.
 // $args have the following keys defined: title, id, callback.
 // the values are defined at the add_settings_section() function.
-function gix_section_developers_cb($args)
-{
+function gix_section_developers_cb( $args ) {
 ?>
-	<p id="<?php echo esc_attr($args['id']); ?>"><?php esc_html_e('Follow the white rabbit.', 'gix'); ?></p>
+	<p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'Follow the white rabbit.', 'gix' ); ?></p>
 <?php
 }
- 
+
 // pill field cb
- 
 // field callbacks can accept an $args parameter, which is an array.
 // $args is defined at the add_settings_field() function.
-// wordpress has magic interaction with the following keys: label_for, class.
+// WordPress has magic interaction with the following keys: label_for, class.
 // the "label_for" key value is used for the "for" attribute of the <label>.
 // the "class" key value is used for the "class" attribute of the <tr> containing the field.
 // you can add custom key value pairs to be used inside your callbacks.
-function gix_field_pill_cb($args)
-{
+function gix_field_pill_cb( $args ) {
 	// get the value of the setting we've registered with register_setting()
-	$options = get_option('gix_options');
+	$options = get_option( 'gix_options' );
 	// output the field
 ?>
 	<label for="select-post-type">Select post_type to import to:</label>
 	<select id="select-post-type" name="select-post-type">
 		<?php
-		foreach (get_post_types(['public'=>true]) as $post_type) :
+		foreach ( get_post_types(
+			[
+				'public' => true,
+			]
+		) as $post_type ) :
 			echo "<option>$post_type</option>";
-		endforeach; ?>
+		endforeach;
+		?>
 	</select>
 
 	<div id="drop">Drop a spreadsheet file here to see sheet data</div>
 	<input type="file" name="xlfile" id="xlf"> ... or click here to select a file
 
-	<div class="soldier-list"></div>
+	<div id="results"></div>
 
 	<pre id="out"></pre>
 <?php
@@ -201,15 +200,17 @@ function gix_create_posts() {
 
 	foreach ( $xlsx as $sheet ) :
 		if ( is_array( $sheet ) ) :
-			$count = 0;
+
 			foreach ( $sheet as $row ) :
 
 				$post_id = gix_check_for_post( $row->full_name );
-				echo "<pre>".print_r($post_id, true)."</pre>";
-
+				// if ( $post_id > 0 ) {
+				// echo "<pre>Post found: ".print_r( $post_id, true )."</pre>";
+				// continue;
+				// }
 				$postarr = [
 					'post_type'     => 'soldier',
-					'post_id'       => $post_id,
+					'ID'            => $post_id,
 					'post_title'    => $row->full_name,
 					'post_status'   => 'publish',
 					// 'post_content'  => $row->full_name,
@@ -237,12 +238,11 @@ function gix_create_posts() {
 
 				$insert = wp_insert_post( $postarr, true );
 
-				if ( class_exists( 'ACF' ) ) {
-					foreach ( $postrr['meta_input'] as $selector => $value ) {
-						update_field( $selector, $value, $insert );
-					}
-				}
-
+				// if ( class_exists( 'ACF' ) ) {
+				// foreach ( $postrr['meta_input'] as $selector => $value ) {
+				// update_field( $selector, $value, $insert );
+				// }
+				// }
 				if ( ! is_wp_error( $insert ) ) {
 					echo '<pre>' . print_r( $postarr['post_title'], true ) . '</pre>'; // WPCS: XSS okay.
 				} else {
@@ -319,13 +319,16 @@ function MediaFileAlreadyExists( $filename ) {
  * @return [type]          [description].
  */
 function gix_insert_images( $img_arr, $parent = 0 ) {
-	clearstatcache();
-	if ( ! is_array( $img_path ) ) {
+	// clearstatcache();
+	ob_start();
+	if ( ! is_array( $img_arr ) ) {
+		echo 'Error not an array.';
 		return;
 	}
 
 	foreach ( $img_arr as $field_name => $img_path ) {
 		if ( ! file_exists( $img_path ) ) {
+			echo 'File does not exist.';
 			continue;
 		}
 
@@ -347,6 +350,8 @@ function gix_insert_images( $img_arr, $parent = 0 ) {
 			echo '<pre>' . print_r( $attachment_id, true ) . '</pre>'; // WPCS: XSS okay.
 		}
 	}
+
+	return ob_get_clean();
 }
 
 /**

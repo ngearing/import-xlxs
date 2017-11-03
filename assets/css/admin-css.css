@@ -13,3 +13,27 @@
     text-align: center;
     transition: background-color 0.3s ease;
 }
+
+#results {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 1rem;
+    margin: 2em 0;
+    padding: 2em;
+    min-height: 20vh;
+}
+
+#results.loading {
+    position: relative;
+    opacity: 0.5;
+}
+
+#results.loading::before {
+    content: '@';
+    display: block;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translate3d(-50%, -50%, 0);
+            transform: translate3d(-50%, -50%, 0);
+    z-index: 9999;
+}
